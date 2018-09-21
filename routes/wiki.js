@@ -9,23 +9,29 @@ const main = require('../views/main');
 
 router.get('/', async (req, res, next) => {
   const allPages = await models.Page.findAll();
-  console.log(allPages);
   res.send(main(allPages));
 });
 
 router.post('/', async (req, res, next) => {
+  const author = req.body.author;
+  const email = req.body.email;
   const title = req.body.title;
-  //const slug = title.split(' ').join('-');
   const content = req.body.content;
-  const page = new models.Page({
-    title: title,
-    // slug: slug,
-    content: content,
+
+  const [user, wasCreated] = await models.User.findOrCreate({
+    where: {
+      name: author,
+      email: email
+    }
   });
-  console.log(page);
+
+  const page = await models.Page.create(req.body);
+
+  page.setAuthor(user);
 
   try {
     await page.save();
+    // await user.save();
     res.redirect(`/wiki/${page.slug}`);
   } catch (error) {
     next(error);
