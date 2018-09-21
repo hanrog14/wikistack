@@ -25,13 +25,13 @@ const Page = db.define('page', {
   },
 });
 
-Page.beforeValidate((userInstance) => {
-  userInstance.slug = slug(userInstance.title)
-})
+Page.beforeValidate(userInstance => {
+  userInstance.slug = slug(userInstance.title);
+});
 
 function slug(title) {
   if (title === '') {
-    let str = ''
+    let str = '';
     for (let x = 0; x < 5; x++) {
       str = str + Math.round(Math.random() * 10);
     }
@@ -44,15 +44,12 @@ function slug(title) {
 const User = db.define('user', {
   name: {
     type: Sequelize.STRING,
-    validate: {
-      notNull: true,
-      is: ['^[a-z]+$', 'i'],
-    },
+    allNull: false,
   },
   email: {
     type: Sequelize.STRING,
+    allNull: false,
     validate: {
-      notNull: true,
       isEmail: true,
     },
   },
