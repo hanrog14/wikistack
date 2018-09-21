@@ -15,14 +15,14 @@ const PORT = 3000;
 // });
 
 app.use(morgan('dev'));
-app.use(express.static(__dirname + '/stylesheets'));
+app.use(express.static(__dirname + '/public'));
 app.use(express.urlencoded({ extended: false }));
 //app.use(express.json());
 app.use('/user', userRouter);
 app.use('/wiki', wikiRouter);
 
 app.get('/', (req, res) => {
-  res.send(layout(''));
+  res.redirect('/wiki');
 });
 
 async function connect() {

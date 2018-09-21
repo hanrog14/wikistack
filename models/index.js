@@ -14,21 +14,32 @@ const Page = db.define('page', {
   },
   slug: {
     type: Sequelize.STRING,
-    validate: {
-      notNull: true,
-    },
+    allowNull: false,
   },
   content: {
     type: Sequelize.TEXT,
-    validate: {
-      notNull: true,
-      notEmpty: true,
-    },
+    allowNull: false,
   },
   status: {
     type: Sequelize.ENUM('open', 'closed'),
   },
 });
+
+Page.beforeValidate((userInstance) => {
+  userInstance.slug = slug(userInstance.title)
+})
+
+function slug(title) {
+  if (title === '') {
+    let str = ''
+    for (let x = 0; x < 5; x++) {
+      str = str + Math.round(Math.random() * 10);
+    }
+    return str;
+  } else {
+    return title.replace(/\s+/g, '_').replace(/\W/g, '');
+  }
+}
 
 const User = db.define('user', {
   name: {
